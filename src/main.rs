@@ -8,12 +8,12 @@ fn load_image(path: &str) -> DynamicImage {
             Ok(img) => img,
 
             Err(err) => {
-                panic!("Failed to decode image: {}", err);
+                panic!("Failed to decode image: {} with error: {}", path, err);
             }
         },
 
         Err(err) => {
-            panic!("Failed to open image: {}", err);
+            panic!("Failed to open image: {} with error: {}", path, err);
         }
     }
 }
@@ -27,8 +27,10 @@ fn to_ascii(pixel: u8) -> char {
 fn img_to_ascii(img: DynamicImage, width: u32, height: u32) -> String {
     let img = img.resize(width, height, FilterType::Nearest).to_luma8();
     let mut ascii_string = String::with_capacity((width * height) as usize);
-    for y in 0..height {
-        for x in 0..width {
+    let h = img.height();
+    let w = img.width();
+    for y in 0..h {
+        for x in 0..w {
             let Luma([v]) = *img.get_pixel(x, y);
             let c = to_ascii(v);
             ascii_string.push(c);
