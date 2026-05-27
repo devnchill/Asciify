@@ -29,7 +29,7 @@
             packages = [
               openssl
               pkg-config
-              rust-bin.beta.latest.default
+              rust-bin.stable.latest.default
             ];
 
           };
