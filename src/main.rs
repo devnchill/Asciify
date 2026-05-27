@@ -1,7 +1,6 @@
 use image::imageops::FilterType;
 use image::{DynamicImage, ImageReader, Luma};
-use std::fs::File;
-use std::io::Write;
+use std::fs;
 
 fn load_image(path: &str) -> DynamicImage {
     match ImageReader::open(path) {
@@ -25,17 +24,28 @@ fn to_ascii(pixel: u8) -> char {
     CHARS[idx]
 }
 
-fn main() {
-    let img = load_image("samples/fastfetch.png")
-        .resize(120, 80, FilterType::Nearest)
-        .to_luma8();
-    let mut ascii_file = File::create("ascii.txt").expect("unable to create ascii file");
-    for y in 0..img.height() {
-        for x in 0..img.width() {
+fn img_to_ascii(img: DynamicImage, width: u32, height: u32) -> String {
+    let img = img.resize(width, height, FilterType::Nearest).to_luma8();
+    let mut ascii_string = String::with_capacity((width * height) as usize);
+    for y in 0..height {
+        for x in 0..width {
             let Luma([v]) = *img.get_pixel(x, y);
             let c = to_ascii(v);
-            write!(ascii_file, "{c}").unwrap();
+            ascii_string.push(c);
         }
-        writeln!(ascii_file).unwrap();
+        ascii_string.push('\n');
     }
+    ascii_string
+}
+
+fn save_ascii_img(ascii_string: &str, path: &str) {
+    fs::write(path, ascii_string).expect("unable to write string");
+}
+
+fn main() {
+    let img_path = "sample/fastfetch.png";
+    let ascii_out_path = "ascii.txt";
+    let img = load_image(img_path);
+    let ascii_string = img_to_ascii(img, 120, 90);
+    save_ascii_img(&ascii_string, ascii_out_path);
 }
