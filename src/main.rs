@@ -40,7 +40,7 @@ fn img_to_ascii(img: DynamicImage, width: u32, height: u32) -> String {
     ascii_string
 }
 
-fn save_ascii_img(ascii_string: &str, path: &str) {
+fn save_ascii_txt(ascii_string: &str, path: &str) {
     fs::write(path, ascii_string).expect("unable to write string");
 }
 
@@ -49,5 +49,5 @@ fn main() {
     let ascii_out_path = "ascii.txt";
     let img = load_image(img_path);
     let ascii_string = img_to_ascii(img, 120, 90);
-    save_ascii_img(&ascii_string, ascii_out_path);
+    save_ascii_txt(&ascii_string, ascii_out_path);
 }
