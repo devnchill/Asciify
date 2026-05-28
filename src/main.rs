@@ -24,7 +24,7 @@ fn to_ascii(pixel: u8) -> char {
     CHARS[idx]
 }
 
-fn img_to_ascii(img: DynamicImage, width: u32, height: u32) -> String {
+fn img_to_ascii_string(img: DynamicImage, width: u32, height: u32) -> String {
     let img = img.resize(width, height, FilterType::Nearest).to_luma8();
     let mut ascii_string = String::with_capacity((width * height) as usize);
     let h = img.height();
@@ -40,7 +40,7 @@ fn img_to_ascii(img: DynamicImage, width: u32, height: u32) -> String {
     ascii_string
 }
 
-fn save_ascii_img(ascii_string: &str, path: &str) {
+fn save_ascii_txt(ascii_string: &str, path: &str) {
     fs::write(path, ascii_string).expect("unable to write string");
 }
 
@@ -48,6 +48,6 @@ fn main() {
     let img_path = "sample/fastfetch.png";
     let ascii_out_path = "ascii.txt";
     let img = load_image(img_path);
-    let ascii_string = img_to_ascii(img, 120, 90);
-    save_ascii_img(&ascii_string, ascii_out_path);
+    let ascii_string = img_to_ascii_string(img, 120, 90);
+    save_ascii_txt(&ascii_string, ascii_out_path);
 }
