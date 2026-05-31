@@ -1,7 +1,6 @@
 use image::imageops::FilterType;
 use image::{DynamicImage, ImageReader, Luma};
 use std::fs;
-use text_to_png::{Color, TextRenderer};
 
 fn load_image(path: &str) -> DynamicImage {
     match ImageReader::open(path) {
@@ -41,18 +40,7 @@ fn img_to_ascii_string(img: DynamicImage, width: u32, height: u32) -> String {
     ascii_string
 }
 
-fn ascii_string_to_img(ascii_string: &str) -> Vec<u8> {
-    let renderer = TextRenderer::default();
-    let color = Color::new(255, 255, 255);
-    let text_png = renderer.render_text_to_png_data(ascii_string, 64, color);
-    match text_png {
-        Ok(img) => {
-            println!("size: {:#?}", img.size);
-            img.data
-        }
-        Err(err) => panic!("Unable to render ascii on image: {}", err),
-    }
-}
+fn ascii_string_to_img(ascii_string: &str) -> Vec<u8> {}
 
 fn save_ascii_txt(ascii_string: &str, path: &str) {
     fs::write(path, ascii_string).expect("unable to write string");
@@ -68,11 +56,6 @@ fn main() {
     let ascii_img_out_path = "out/ascii.png";
     let img = load_image(img_path);
     let ascii_string = img_to_ascii_string(img, 120, 90);
-
-    // this seems to work
-    // let ascii_img = ascii_string_to_img("######");
-
-    // This does not works
     let ascii_img = ascii_string_to_img(&ascii_string);
     save_ascii_txt(&ascii_string, ascii_txt_out_path);
     save_ascii_img(&ascii_img, ascii_img_out_path);
