@@ -1,6 +1,6 @@
 use ab_glyph::{Font, FontRef, Glyph, point};
 use image::imageops::FilterType;
-use image::{DynamicImage, ImageReader, Luma};
+use image::{DynamicImage, ImageBuffer, ImageReader, Luma};
 use std::fs;
 use std::sync::OnceLock;
 
@@ -44,12 +44,12 @@ fn img_to_ascii_string(img: DynamicImage, width: u32, height: u32) -> String {
     ascii_string
 }
 
-fn ascii_string_to_img(ascii_string: &str) -> Vec<u8> {
+fn ascii_string_to_img(ascii_string: &str) -> ImageBuffer<Luma<u8>, Vec<u8>> {
     let font = FONT.get_or_init(|| {
         FontRef::try_from_slice(include_bytes!("../assets/fonts/DejaVuSansMono.ttf"))
             .expect("Failed to load font")
     });
-    let font_size = 16 as f32;
+    let font_size = 16.0;
     let glyph: Glyph = font.glyph_id('c').with_scale(font_size);
     let lines: Vec<&str> = ascii_string.lines().collect();
     let rows = lines.len();
@@ -70,20 +70,20 @@ fn ascii_string_to_img(ascii_string: &str) -> Vec<u8> {
             if let Some(outlined) = font.outline_glyph(glyph) {
                 outlined.draw(|x, y, c| {
                     let brightness = (c * 255.0) as u8;
-                    canvas.put_pixel(x, y, Luma([brightness]));
+                    canvas.put_pixel(x + pos_x as u32, y + pos_y as u32, Luma([brightness]));
                 });
             }
         }
     }
-    canvas.into_vec()
+    canvas
 }
 
 fn save_ascii_txt(ascii_string: &str, path: &str) {
     fs::write(path, ascii_string).expect("unable to write string");
 }
 
-fn save_ascii_img(img_data: &Vec<u8>, path: &str) {
-    fs::write(path, img_data).expect("unable to write ascii image");
+fn save_ascii_img(img_data: &ImageBuffer<Luma<u8>, Vec<u8>>, path: &str) {
+    img_data.save(path).expect("Failed to save the image");
 }
 
 fn main() {
