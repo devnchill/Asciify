@@ -60,8 +60,8 @@ fn ascii_string_to_img(ascii_string: &str) -> ImageBuffer<Luma<u8>, Vec<u8>> {
         (cols as f32 * char_width) as u32,
         (rows as f32 * char_height) as u32,
     );
-    for y in 0..rows {
-        for (x, c) in lines[y].chars().enumerate() {
+    for (y, line) in lines.iter().enumerate() {
+        for (x, c) in line.chars().enumerate() {
             let pos_x = x as f32 * char_width;
             let pos_y = y as f32 * char_height;
             let glyph = font
