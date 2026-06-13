@@ -1,4 +1,4 @@
-use crate::art::image::AsciiArt;
+use crate::art::ascii::AsciiArt;
 mod art;
 
 fn main() {
