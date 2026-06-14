@@ -33,8 +33,11 @@ impl AsciiArt {
     }
 
     fn brightness_of_pixel_to_ascii_char(pixel: u8) -> char {
+        // for image this ramp is better
+        // const CHARS: &[u8] = b" .:-=+*#%@";
         const CHARS: &[u8] =
             b"$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+
         let idx = (pixel as usize * (CHARS.len() - 1)) / 255;
         char::from(CHARS[idx])
     }
