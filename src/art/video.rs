@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{fs, process::Command};
 
 use crate::art::ascii::AsciiArt;
 
@@ -30,6 +30,7 @@ pub fn generate_ascii_frames(frames_dir_path: &str, output_path: &str) {
         art.generate(120, 80);
         art.save_ascii_img(&save_path);
     }
+    fs::remove_dir_all(frames_dir_path).expect("couldn't remove frames_dir_path");
 }
 
 pub fn generate_ascii_video(ascii_frames_path: &str) {
@@ -47,4 +48,5 @@ pub fn generate_ascii_video(ascii_frames_path: &str) {
         .unwrap();
 
     assert!(status.success());
+    fs::remove_dir_all(ascii_frames_path).expect("couldn't remove ascii_frame_path");
 }
