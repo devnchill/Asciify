@@ -1,16 +1,23 @@
-use crate::art::ascii::AsciiArt;
+use crate::art::video::{extract_frames, generate_ascii_frames, generate_ascii_video};
 mod art;
 
 fn main() {
-    const HEIGHT: u32 = 90;
-    const WIDTH: u32 = 120;
-    let input_path = "samples/5.jpg";
-    let txt_path = "out/ascii.txt";
-    let img_path = "out/ascii.png";
+    // const HEIGHT: u32 = 90;
+    // const WIDTH: u32 = 120;
+    // let input_path = "samples/5.jpg";
+    // let txt_path = "out/ascii.txt";
+    // let img_path = "out/ascii.png";
+    //
+    // let mut art = AsciiArt::new(input_path);
+    //
+    // art.generate(WIDTH, HEIGHT);
+    // art.save_ascii_txt(txt_path);
+    // art.save_ascii_img(img_path);
+    let frame_dir_path = "out/video/raw_frames";
+    let ascii_frame_path = "out/video/ascii_frames";
+    let video_path = "samples/rick_roll.mp4";
 
-    let mut art = AsciiArt::new(input_path);
-
-    art.generate(WIDTH, HEIGHT);
-    art.save_ascii_txt(txt_path);
-    art.save_ascii_img(img_path);
+    extract_frames(video_path, frame_dir_path);
+    generate_ascii_frames(frame_dir_path, ascii_frame_path);
+    generate_ascii_video(ascii_frame_path);
 }
