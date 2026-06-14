@@ -33,7 +33,11 @@ impl AsciiArt {
     }
 
     fn brightness_of_pixel_to_ascii_char(pixel: u8) -> char {
-        const CHARS: &[u8] = b"@#*+=-:. ";
+        // for image this ramp is better
+        // const CHARS: &[u8] = b" .:-=+*#%@";
+        const CHARS: &[u8] =
+            b"$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+
         let idx = (pixel as usize * (CHARS.len() - 1)) / 255;
         char::from(CHARS[idx])
     }
@@ -41,7 +45,7 @@ impl AsciiArt {
     fn img_to_ascii_string(&self, width: u32, height: u32) -> String {
         let img = self
             .src_img
-            .resize(width, height, FilterType::Nearest)
+            .resize(width, height, FilterType::Lanczos3)
             .to_luma8();
         let mut ascii_string = String::with_capacity((width * height + height) as usize);
         let h = img.height();

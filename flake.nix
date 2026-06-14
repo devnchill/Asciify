@@ -27,6 +27,7 @@
           with pkgs;
           mkShell {
             packages = [
+              ffmpeg-full
               openssl
               pkg-config
               rust-bin.stable.latest.default

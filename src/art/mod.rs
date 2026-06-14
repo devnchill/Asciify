@@ -1,1 +1,2 @@
-pub mod image;
+pub mod ascii;
+pub mod video;
