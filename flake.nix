@@ -3,40 +3,36 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    rust-overlay.url = "github:oxalica/rust-overlay";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
+    { nixpkgs, ... }:
+    let
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      pkgsFor = forAllSystems (system: nixpkgs.legacyPackages.${system});
+    in
     {
-      nixpkgs,
-      rust-overlay,
-      flake-utils,
-      ...
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        overlays = [ (import rust-overlay) ];
-        pkgs = import nixpkgs {
-          inherit system overlays;
+      packages = forAllSystems (system: {
+        default = pkgsFor.${system}.callPackage ./default.nix { };
+      });
+
+      devShells = forAllSystems (system: {
+        default = pkgsFor.${system}.mkShell {
+          packages = with pkgsFor.${system}; [
+            cargo
+            rustc
+            ffmpeg-full
+            openssl
+            pkg-config
+          ];
         };
-      in
-      {
-        devShells.default =
-          with pkgs;
-          mkShell {
-            packages = [
-              ffmpeg-full
-              openssl
-              pkg-config
-              rust-bin.stable.latest.default
-            ];
-          };
+      });
 
-        packages.default = pkgs.callPackage ./default.nix { };
-
-        formatter = pkgs.nixpkgs-fmt;
-      }
-    );
+      formatter = forAllSystems (system: pkgsFor.${system}.nixpkgs-fmt);
+    };
 }
