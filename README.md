@@ -35,21 +35,52 @@ For videos, the workflow consists of:
 
 ## Installation
 
-> For Nix users
+### Nix Users
 
-1. **Using nix build** (if you have cloned the repo):
+**Run directly (no clone needed):**
 
-   ```console
-   nix develop
-   ```
+```console
+nix run github:devnchill/Asciify
+```
 
-   This installs all toolchain including `ffmpeg`.
+**Build locally:**
 
-2. **Run directly without cloning:**
+```console
+git clone https://github.com/devnchill/Asciify
+cd Asciify
+nix build
+```
 
-   ```console
-   nix run github:devnchill/Asciify
-   ```
+### Non-Nix Users
+
+Requires [Rust](https://rustup.rs) and [ffmpeg](https://ffmpeg.org/download.html) on your system.
+
+```console
+git clone https://github.com/devnchill/Asciify
+cd Asciify
+cargo run --release
+```
+
+## Contributing
+
+Check the [open issues](https://github.com/devnchill/Asciify/issues) if you'd like to help out.
+
+**Nix users:** simply run `nix develop` to get a shell with all dependencies (Rust toolchain + ffmpeg).
+
+---
+
+## Future Improvements
+
+- [ ] Faster frame processing
+- [ ] Parallel frame generation
+- [ ] Colored ASCII output
+- [ ] Custom character ramps
+- [ ] Adjustable output resolution
+- [ ] Audio preservation
+- [ ] Better font rendering
+- [ ] Reduced memory usage
+
+---
 
 ## How It Works
 
@@ -186,17 +217,4 @@ ASCII Video
 - Rust
 - FFmpeg
 
----
 
-## Future Improvements
-
-- Faster frame processing
-- Parallel frame generation
-- Colored ASCII output
-- Custom character ramps
-- Adjustable output resolution
-- Audio preservation
-- Better font rendering
-- Reduced memory usage
-
----
