@@ -32,8 +32,9 @@
               pkg-config
               rust-bin.stable.latest.default
             ];
-
           };
+
+        packages.default = pkgs.callPackage ./default.nix { };
       }
     );
 }
