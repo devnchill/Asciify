@@ -1,5 +1,5 @@
 {
-  description = "A devShell example";
+  description = "Asciify — ASCII video generator";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -35,6 +35,8 @@
           };
 
         packages.default = pkgs.callPackage ./default.nix { };
+
+        formatter = pkgs.nixpkgs-fmt;
       }
     );
 }

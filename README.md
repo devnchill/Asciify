@@ -33,6 +33,24 @@ For videos, the workflow consists of:
 
 ---
 
+## Installation
+
+> For Nix users
+
+1. **Using nix build** (if you have cloned the repo):
+
+   ```console
+   nix develop
+   ```
+
+   This installs all toolchain including `ffmpeg`.
+
+2. **Run directly without cloning:**
+
+   ```console
+   nix run github:devnchill/Asciify
+   ```
+
 ## How It Works
 
 ### 1. Frame Extraction
@@ -167,8 +185,6 @@ ASCII Video
 
 - Rust
 - FFmpeg
-- Image Processing
-- ASCII Character Mapping
 
 ---
 
