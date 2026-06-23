@@ -64,7 +64,7 @@ cargo run --release
 
 ## Contributing
 
-Check the [open issues](https://github.com/devnchill/Asciify/issues) if you'd like to help out.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 **Nix users:** simply run `nix develop` to get a shell with all dependencies (Rust toolchain + ffmpeg).
 
