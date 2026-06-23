@@ -3,7 +3,7 @@
 > [!WARNING]
 > **Work In Progress**
 >
-> This project is still under active development. The implementation is currently unoptimized and may contain bugs, inefficiencies, and incomplete features. Performance improvements and additional functionality are planned for future releases.
+> This project is still under active development. The implementation is currently unoptimized and may contain bugs, inefficiencies, and incomplete features. Performance improvements and additional functionality are planned for future releases. See the [Future Improvements](#future-improvements) section for the planned work.
 
 Convert images and videos into ASCII-art representations using Rust and FFmpeg.
 
@@ -31,6 +31,55 @@ For videos, the workflow consists of:
 2. Converting each frame into ASCII art.
 3. Rendering the ASCII representation back into image frames.
 4. Combining the generated frames into a final video.
+
+---
+
+## Installation
+
+### Nix Users
+
+**Run directly (no clone needed):**
+
+```console
+nix run github:devnchill/Asciify
+```
+
+**Build locally:**
+
+```console
+git clone https://github.com/devnchill/Asciify
+cd Asciify
+nix build
+```
+
+### Non-Nix Users
+
+Requires [Rust](https://rustup.rs) and [ffmpeg](https://ffmpeg.org/download.html) on your system.
+
+```console
+git clone https://github.com/devnchill/Asciify
+cd Asciify
+cargo run --release
+```
+
+## Contributing
+
+Check the [open issues](https://github.com/devnchill/Asciify/issues) if you'd like to help out.
+
+**Nix users:** simply run `nix develop` to get a shell with all dependencies (Rust toolchain + ffmpeg).
+
+---
+
+## Future Improvements
+
+- [ ] Faster frame processing
+- [ ] Parallel frame generation
+- [ ] Colored ASCII output
+- [ ] Custom character ramps
+- [ ] Adjustable output resolution
+- [ ] Audio preservation
+- [ ] Better font rendering
+- [ ] Reduced memory usage
 
 ---
 
@@ -168,20 +217,5 @@ ASCII Video
 
 - Rust
 - FFmpeg
-- Image Processing
-- ASCII Character Mapping
-
----
-
-## Future Improvements
-
-- Faster frame processing
-- Parallel frame generation
-- Colored ASCII output
-- Custom character ramps
-- Adjustable output resolution
-- Audio preservation
-- Better font rendering
-- Reduced memory usage
 
 ---
