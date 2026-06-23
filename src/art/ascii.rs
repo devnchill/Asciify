@@ -2,7 +2,7 @@ use ab_glyph::{Font, Glyph, point};
 use std::{fs, sync::OnceLock};
 
 use ab_glyph::FontRef;
-use image::{DynamicImage, ImageReader, Luma, imageops::FilterType};
+use image::{DynamicImage, ImageReader, Luma, imageops};
 
 static FONT: OnceLock<FontRef<'static>> = OnceLock::new();
 
@@ -43,18 +43,21 @@ impl AsciiArt {
     }
 
     fn img_to_ascii_string(&self, width: u32, height: u32) -> String {
+        // Resize then convert to luma. Order matters: resizing in color space
+        // preserves chromatic information during Lanczos3 sampling; converting
+        // to luma first would lose color detail before the downsample.
         let img = self
             .src_img
-            .resize(width, height, FilterType::Lanczos3)
+            .resize(width, height, imageops::FilterType::Lanczos3)
             .to_luma8();
-        let mut ascii_string = String::with_capacity((width * height + height) as usize);
-        let h = img.height();
-        let w = img.width();
-        for y in 0..h {
-            for x in 0..w {
-                let Luma([v]) = *img.get_pixel(x, y);
-                let c = Self::brightness_of_pixel_to_ascii_char(v);
-                ascii_string.push(c);
+        let capacity = width as usize * height as usize + height as usize;
+        let mut ascii_string = String::with_capacity(capacity);
+        // Iterate over rows/slices directly instead of calling get_pixel(x, y)
+        // per pixel. get_pixel does bounds checks on every call; row iteration
+        // is a zero-overhead pointer walk across the contiguous pixel buffer.
+        for row in img.rows() {
+            for pixel in row {
+                ascii_string.push(Self::brightness_of_pixel_to_ascii_char(pixel[0]));
             }
             ascii_string.push('\n');
         }
@@ -74,7 +77,10 @@ impl AsciiArt {
         let glyph: Glyph = font.glyph_id('c').with_scale(font_size);
         let lines: Vec<&str> = ascii_string.lines().collect();
         let rows = lines.len();
-        let cols = lines.iter().map(|l| l.len()).max().unwrap_or(0);
+        // All lines produced by img_to_ascii_string have identical length
+        // (width characters each). first() is O(1); the old .max() iterated
+        // every line redundantly.
+        let cols = lines.first().map_or(0, |l| l.len());
         let char_width = ab_glyph::FontRef::glyph_bounds(font, &glyph).width();
         let char_height = ab_glyph::FontRef::glyph_bounds(font, &glyph).height();
         let mut canvas = image::ImageBuffer::new(
@@ -82,16 +88,25 @@ impl AsciiArt {
             (rows as f32 * char_height) as u32,
         );
         for (y, line) in lines.iter().enumerate() {
+            let pos_y = y as f32 * char_height;
             for (x, c) in line.chars().enumerate() {
                 let pos_x = x as f32 * char_width;
-                let pos_y = y as f32 * char_height;
                 let glyph = font
                     .glyph_id(c)
                     .with_scale_and_position(font_size, point(pos_x, pos_y));
                 if let Some(outlined) = font.outline_glyph(glyph) {
+                    // outlined.draw() yields rasterizer-LOCAL coordinates
+                    // (0..px_bounds.width, 0..px_bounds.height). The glyph
+                    // position set by with_scale_and_position affects internal
+                    // rasterizer offset but does NOT appear in x,y. Adding
+                    // pos_x/pos_y places the glyph at its intended canvas spot.
                     outlined.draw(|x, y, c| {
                         let brightness = (c * 255.0) as u8;
-                        canvas.put_pixel(x + pos_x as u32, y + pos_y as u32, Luma([brightness]));
+                        canvas.put_pixel(
+                            x + pos_x as u32,
+                            y + pos_y as u32,
+                            Luma([brightness]),
+                        );
                     });
                 }
             }
