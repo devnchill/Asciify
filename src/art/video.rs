@@ -42,7 +42,7 @@ pub fn generate_ascii_video(ascii_frames_path: &str) {
             "30",
             "-i",
             &frame_pattern,
-            "out/video/ascii_video.mp4",
+            "out/ascii_video.mp4",
         ])
         .status()
         .unwrap();
