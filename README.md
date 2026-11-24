@@ -30,7 +30,7 @@ For videos, the workflow consists of:
 1. Extracting video frames.
 2. Converting each frame into ASCII art.
 3. Rendering the ASCII representation back into image frames.
-4. Combining the generated frames into a final video.
+4. Combining the generated frames with any audio tracks from the source video.
 
 ---
 
@@ -77,7 +77,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - [ ] Colored ASCII output
 - [ ] Custom character ramps
 - [ ] Adjustable output resolution
-- [ ] Audio preservation
+- [x] Audio preservation
 - [ ] Better font rendering
 - [ ] Reduced memory usage
 

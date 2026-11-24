@@ -2,11 +2,20 @@ use std::{fs, process::Command};
 
 use crate::art::ascii::{AsciiArt, AsciiMode};
 
+const OUTPUT_FPS: &str = "30";
+
 pub fn extract_frames(video_path: &str, output_path: &str) {
     std::fs::create_dir_all(output_path).expect("couldn't create out dir");
     let frame_pattern = format!("{output_path}/frame_%06d.png");
     let status = Command::new("ffmpeg")
-        .args(["-i", video_path, &frame_pattern])
+        // PNGs carry no timestamps. Sample on the output timeline before rendering them.
+        .args([
+            "-i",
+            video_path,
+            "-vf",
+            &format!("fps={OUTPUT_FPS}:start_time=0"),
+            &frame_pattern,
+        ])
         .status()
         .unwrap();
     assert!(status.success());
@@ -33,15 +42,23 @@ pub fn generate_ascii_frames(frames_dir_path: &str, output_path: &str) {
     fs::remove_dir_all(frames_dir_path).expect("couldn't remove frames_dir_path");
 }
 
-pub fn generate_ascii_video(ascii_frames_path: &str) {
+pub fn generate_ascii_video(ascii_frames_path: &str, video_path: &str) {
     let frame_pattern = format!("{ascii_frames_path}/ascii_frame_%06d.png");
 
     let status = Command::new("ffmpeg")
         .args([
             "-framerate",
-            "30",
+            OUTPUT_FPS,
             "-i",
             &frame_pattern,
+            "-i",
+            video_path,
+            "-map",
+            "0:v:0",
+            "-map",
+            "1:a?",
+            "-c:a",
+            "aac",
             "out/ascii_video.mp4",
         ])
         .status()

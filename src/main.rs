@@ -46,7 +46,7 @@ fn main() {
             let ascii_frame_path = "out/video/ascii_frames";
             extract_frames(&source, frame_dir_path);
             generate_ascii_frames(frame_dir_path, ascii_frame_path);
-            generate_ascii_video(ascii_frame_path);
+            generate_ascii_video(ascii_frame_path, &source);
         }
     }
 }
